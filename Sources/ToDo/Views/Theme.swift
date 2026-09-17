@@ -11,7 +11,7 @@ struct Theme {
     var title: NSFont { Theme.font(size: round(base * 1.7), weight: .heavy) }
     var header: NSFont { Theme.font(size: round(base * 1.05), weight: .bold) }
     var item: NSFont { Theme.font(size: base, weight: .regular) }
-    var checkbox: CGFloat { round(base * 1.3) }
+    var checkbox: CGFloat { round(base * 1.05) }
     var rowSpacing: CGFloat { round(base * 0.1) }
     var sectionSpacing: CGFloat { round(base * 1.1) }
 

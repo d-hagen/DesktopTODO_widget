@@ -15,7 +15,9 @@ final class WidgetRegistry: ObservableObject {
     static let supportDir = FileManager.default.homeDirectoryForCurrentUser
         .appendingPathComponent("Library/Application Support/ToDo")
 
-    init() {
+    /// `loadingWidgets: false` gives an empty registry for offscreen rendering (`--render`).
+    init(loadingWidgets: Bool = true) {
+        guard loadingWidgets else { return }
         var configs = loadConfigs()
         if configs.isEmpty { configs = [migratedOrDefaultConfig()] }
         for config in configs { controllers.append(makeController(config)) }

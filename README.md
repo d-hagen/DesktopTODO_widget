@@ -24,6 +24,8 @@ swift build && .build/debug/ToDo --selftest   # model checks
 - **Delete**: clear a line and press Backspace. Deleting a header merges its tasks
   into the section above.
 - **Navigate**: Up / Down move between lines, Esc stops editing.
+- **Inline styling**: `*bold*` renders bold and `°kursiv°` renders italic, live
+  while you type. The markers stay in the text, drawn dimmed.
 - **Check off**: click the box. The task is crossed out and moved to a `Done`
   section at the bottom. It is deleted automatically 24 hours later, or sooner
   with ••• → Clear Completed. Unchecking moves it back to its original section.
@@ -72,6 +74,8 @@ purge and the "uncheck moves back" behavior. Lines that are neither headings nor
 
 ## Debug hooks
 
+- `ToDo --render list.md out.png [fontSize]` renders a widget for any markdown
+  file to a PNG without touching your widgets. Good for checking layout changes.
 - `kill -USR1 <pid>` writes the rendered widget to `$TMPDIR/todo-snapshot.png`.
 - `kill -USR2 <pid>` runs a scripted editing session and logs to `$TMPDIR/todo-debug.log`.
   It edits the live list, so it is only armed when the app was launched with

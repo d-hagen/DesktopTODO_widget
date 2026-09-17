@@ -4,7 +4,7 @@ import SwiftUI
 final class RowTextField: NSTextField {
     var onAttach: (() -> Void)?
     var rowID: UUID?
-    var strike = false
+    var styleKey = ""
 
     override func viewDidMoveToWindow() {
         super.viewDidMoveToWindow()
@@ -63,30 +63,29 @@ struct EditableText: NSViewRepresentable {
         field.preferredMaxLayoutWidth = width
         let bounds = NSRect(x: 0, y: 0, width: width, height: CGFloat.greatestFiniteMagnitude)
         let measured = field.stringValue.isEmpty ? placeholder : field.stringValue
-        let cell = NSTextFieldCell(textCell: measured)
+        let cell = NSTextFieldCell(textCell: "")
         cell.font = font
         cell.wraps = true
         cell.lineBreakMode = .byWordWrapping
+        cell.attributedStringValue = InlineMarkup.styled(measured, font: font, color: color, strikethrough: false)
         let height = ceil(cell.cellSize(forBounds: bounds).height)
         return CGSize(width: width, height: height)
     }
 
+    private var styleKey: String { "\(font.fontName)/\(font.pointSize)/\(color.hexString)/\(strikethrough)" }
+
     private func apply(to field: RowTextField) {
         field.font = font
         field.textColor = color
-        if strikethrough {
-            if field.stringValue != text || !field.strike {
-                field.attributedStringValue = NSAttributedString(string: text, attributes: [
-                    .font: font,
-                    .foregroundColor: color,
-                    .strikethroughStyle: NSUnderlineStyle.single.rawValue,
-                    .strikethroughColor: color,
-                ])
+        if field.stringValue != text || field.styleKey != styleKey {
+            if let editor = field.currentEditor() as? NSTextView, field.stringValue == text, let storage = editor.textStorage {
+                // Style changed while editing (e.g. text size): restyle in place to keep the caret.
+                InlineMarkup.restyle(storage, font: font, color: color, strikethrough: strikethrough)
+            } else {
+                field.attributedStringValue = InlineMarkup.styled(text, font: font, color: color, strikethrough: strikethrough)
             }
-        } else if field.stringValue != text || field.strike {
-            field.stringValue = text
+            field.styleKey = styleKey
         }
-        field.strike = strikethrough
         field.placeholderAttributedString = NSAttributedString(
             string: placeholder,
             attributes: [.font: font, .foregroundColor: color.withAlphaComponent(0.4)]
@@ -123,6 +122,11 @@ struct EditableText: NSViewRepresentable {
 
         func controlTextDidChange(_ notification: Notification) {
             guard let field = notification.object as? NSTextField else { return }
+            if let editor = field.currentEditor() as? NSTextView, let storage = editor.textStorage {
+                InlineMarkup.restyle(storage, font: parent.font, color: parent.color, strikethrough: parent.strikethrough)
+                editor.typingAttributes = InlineMarkup.baseAttributes(
+                    font: parent.font, color: parent.color, strikethrough: parent.strikethrough)
+            }
             parent.store.updateText(parent.id, field.stringValue)
         }
 
