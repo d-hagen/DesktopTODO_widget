@@ -24,8 +24,9 @@ swift build && .build/debug/ToDo --selftest   # model checks
 - **Delete**: clear a line and press Backspace. Deleting a header merges its tasks
   into the section above.
 - **Navigate**: Up / Down move between lines, Esc stops editing.
-- **Inline styling**: `*bold*` renders bold and `°kursiv°` renders italic, live
-  while you type. The markers stay in the text, drawn dimmed.
+- **Inline styling**: `*bold*` renders bold and `_kursiv_` renders italic, live
+  while you type. The markers are hidden once you leave the line and reappear,
+  dimmed, when you click into it again. They stay in the file.
 - **Check off**: click the box. The task is crossed out and moved to a `Done`
   section at the bottom. It is deleted automatically 24 hours later, or sooner
   with ••• → Clear Completed. Unchecking moves it back to its original section.

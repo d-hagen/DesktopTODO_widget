@@ -5,6 +5,16 @@ final class RowTextField: NSTextField {
     var onAttach: (() -> Void)?
     var rowID: UUID?
     var styleKey = ""
+    /// The model text including markup markers (the displayed text may have them stripped).
+    var sourceText = ""
+    /// Builds the styled value; the argument says whether markers should be visible.
+    var styler: ((Bool) -> NSAttributedString)?
+
+    /// Editing starts: show the markers so they can be edited.
+    override func becomeFirstResponder() -> Bool {
+        if let styler { attributedStringValue = styler(true) }
+        return super.becomeFirstResponder()
+    }
 
     override func viewDidMoveToWindow() {
         super.viewDidMoveToWindow()
@@ -62,28 +72,39 @@ struct EditableText: NSViewRepresentable {
         guard let width = proposal.width, width.isFinite, width > 0 else { return nil }
         field.preferredMaxLayoutWidth = width
         let bounds = NSRect(x: 0, y: 0, width: width, height: CGFloat.greatestFiniteMagnitude)
-        let measured = field.stringValue.isEmpty ? placeholder : field.stringValue
+        let editing = field.currentEditor() != nil
+        let measured = field.sourceText.isEmpty ? placeholder : field.sourceText
         let cell = NSTextFieldCell(textCell: "")
         cell.font = font
         cell.wraps = true
         cell.lineBreakMode = .byWordWrapping
-        cell.attributedStringValue = InlineMarkup.styled(measured, font: font, color: color, strikethrough: false)
+        cell.attributedStringValue = styled(measured, showMarkers: editing)
         let height = ceil(cell.cellSize(forBounds: bounds).height)
         return CGSize(width: width, height: height)
     }
 
     private var styleKey: String { "\(font.fontName)/\(font.pointSize)/\(color.hexString)/\(strikethrough)" }
 
+    private func styled(_ source: String, showMarkers: Bool) -> NSAttributedString {
+        InlineMarkup.styled(source, font: font, color: color, strikethrough: strikethrough, showMarkers: showMarkers)
+    }
+
     private func apply(to field: RowTextField) {
         field.font = font
         field.textColor = color
-        if field.stringValue != text || field.styleKey != styleKey {
-            if let editor = field.currentEditor() as? NSTextView, field.stringValue == text, let storage = editor.textStorage {
+        let source = text
+        field.styler = { showMarkers in
+            InlineMarkup.styled(source, font: font, color: color, strikethrough: strikethrough, showMarkers: showMarkers)
+        }
+        if field.sourceText != text || field.styleKey != styleKey {
+            let editing = field.currentEditor() != nil
+            if editing, field.sourceText == text, let storage = (field.currentEditor() as? NSTextView)?.textStorage {
                 // Style changed while editing (e.g. text size): restyle in place to keep the caret.
                 InlineMarkup.restyle(storage, font: font, color: color, strikethrough: strikethrough)
             } else {
-                field.attributedStringValue = InlineMarkup.styled(text, font: font, color: color, strikethrough: strikethrough)
+                field.attributedStringValue = styled(text, showMarkers: editing)
             }
+            field.sourceText = text
             field.styleKey = styleKey
         }
         field.placeholderAttributedString = NSAttributedString(
@@ -127,12 +148,19 @@ struct EditableText: NSViewRepresentable {
                 editor.typingAttributes = InlineMarkup.baseAttributes(
                     font: parent.font, color: parent.color, strikethrough: parent.strikethrough)
             }
+            (field as? RowTextField)?.sourceText = field.stringValue
             parent.store.updateText(parent.id, field.stringValue)
         }
 
         func controlTextDidEndEditing(_ notification: Notification) {
-            guard let field = notification.object as? NSTextField else { return }
-            parent.store.endedEditing(parent.id, kind: parent.kind, text: field.stringValue)
+            guard let field = notification.object as? RowTextField else { return }
+            let source = field.stringValue
+            // AppKit hands the plain string back to the cell; restore the display styling, markers hidden.
+            if let styler = field.styler {
+                field.attributedStringValue = styler(false)
+            }
+            field.sourceText = source
+            parent.store.endedEditing(parent.id, kind: parent.kind, text: source)
         }
 
         func control(_ control: NSControl, textView: NSTextView, doCommandBy selector: Selector) -> Bool {

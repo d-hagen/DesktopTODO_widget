@@ -45,6 +45,7 @@ final class DebugScript {
     func run() {
         log = []
         let firstItem = store.doc.sections.first?.items.first?.id
+        let markedID = store.doc.sections.flatMap(\.items).first { $0.text.hasPrefix("*Bold") }?.id
         steps = [
             { [self] in
                 note("focus first item via store.focusID")
@@ -105,6 +106,21 @@ final class DebugScript {
             },
             { [self] in
                 note("after backspace on empty done item: Done section exists=\(store.doc.doneIndex != nil)")
+            },
+            { [self] in
+                store.focusID = markedID
+            },
+            { [self] in
+                note("markup edit: editor text='\(editor()?.string ?? "nil")'")
+                command(#selector(NSResponder.cancelOperation(_:)))
+            },
+            { [self] in
+                let f = markedID.flatMap { field(for: $0) }
+                var bold = false
+                f?.attributedStringValue.enumerateAttribute(.font, in: NSRange(location: 0, length: f?.attributedStringValue.length ?? 0)) { v, _, _ in
+                    if let font = v as? NSFont, NSFontManager.shared.traits(of: font).contains(.boldFontMask) { bold = true }
+                }
+                note("markup display: text='\(f?.stringValue ?? "nil")' hasBold=\(bold)")
             },
             { [self] in
                 store.saveNow()
