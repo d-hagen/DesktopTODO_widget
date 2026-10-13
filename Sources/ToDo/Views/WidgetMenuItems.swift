@@ -10,30 +10,30 @@ struct WidgetMenuItems: View {
     let remove: () -> Void
 
     var body: some View {
-        Button("New Task") { store.appendItem() }
-        Button("New Section") { store.appendSection() }
-        Button("Clear Completed") { store.clearCompleted() }
+        Button(Localization.string("New Task")) { store.appendItem() }
+        Button(Localization.string("New Section")) { store.appendSection() }
+        Button(Localization.string("Clear Completed")) { store.clearCompleted() }
         Divider()
-        Menu("Text Size (\(Int(settings.fontSize)))") {
-            Button("Larger") { settings.adjustFont(by: WidgetSettings.fontStep) }
+        Menu(String(format: Localization.string("Text Size (%d)"), Int(settings.fontSize))) {
+            Button(Localization.string("Larger")) { settings.adjustFont(by: WidgetSettings.fontStep) }
                 .disabled(settings.fontSize >= WidgetSettings.fontRange.upperBound)
-            Button("Smaller") { settings.adjustFont(by: -WidgetSettings.fontStep) }
+            Button(Localization.string("Smaller")) { settings.adjustFont(by: -WidgetSettings.fontStep) }
                 .disabled(settings.fontSize <= WidgetSettings.fontRange.lowerBound)
-            Button("Default (\(Int(WidgetSettings.defaultFontSize)))") { settings.resetFont() }
+            Button(String(format: Localization.string("Default (%d)"), Int(WidgetSettings.defaultFontSize))) { settings.resetFont() }
         }
-        Button("Color…") { settings.showColorPanel() }
-        Button("Open \(settings.fileURL.lastPathComponent)") { NSWorkspace.shared.open(settings.fileURL) }
-        Button("Choose File…") { chooseFile() }
+        Button(Localization.string("Color…")) { settings.showColorPanel() }
+        Button(String(format: Localization.string("Open %@"), settings.fileURL.lastPathComponent)) { NSWorkspace.shared.open(settings.fileURL) }
+        Button(Localization.string("Choose File…")) { chooseFile() }
         Divider()
-        Button("New Widget") { registry.addWidget() }
-        Button("Remove This Widget…") { remove() }
-        Toggle("Launch at Login", isOn: Binding(
+        Button(Localization.string("New Widget")) { registry.addWidget() }
+        Button(Localization.string("Remove This Widget…")) { remove() }
+        Toggle(Localization.string("Launch at Login"), isOn: Binding(
             get: { registry.launchAtLogin },
             set: { registry.setLaunchAtLogin($0) }
         ))
         Divider()
-        Button("Hide Widget") { hide() }
-        Button("Quit ToDo") { NSApp.terminate(nil) }
+        Button(Localization.string("Hide Widget")) { hide() }
+        Button(Localization.string("Quit ToDo")) { NSApp.terminate(nil) }
     }
 
     private func chooseFile() {

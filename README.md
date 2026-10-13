@@ -15,6 +15,15 @@ Needs only the Xcode Command Line Tools (Swift 5.9+), macOS 14 or later.
 swift build && .build/debug/ToDo --selftest   # model checks
 ```
 
+## Localization
+
+The interface follows your system language. English is the base language; a
+Simplified Chinese (`zh-Hans`) translation lives in `Resources/zh-Hans.lproj`
+and `build.sh` copies it into the app bundle. A new list is seeded with example
+tasks in the current language. The `TO DO:` title and the `Done` heading are not
+localized: they are structural identifiers and stay in English whatever the
+interface language is.
+
 ## Using it
 
 - **Edit**: click any line (title, header, task) and type.

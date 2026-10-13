@@ -62,7 +62,7 @@ struct RootView: View {
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-                .help("Hide widget (bring it back from the menu bar icon)")
+                .help(Localization.string("Hide widget (bring it back from the menu bar icon)"))
 
                 Spacer()
 

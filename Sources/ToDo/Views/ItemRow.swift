@@ -18,7 +18,7 @@ struct ItemRow: View {
                 id: item.id,
                 kind: .item,
                 text: item.text,
-                placeholder: "New task",
+                placeholder: Localization.string("New task"),
                 font: theme.item,
                 color: color,
                 strikethrough: item.done,

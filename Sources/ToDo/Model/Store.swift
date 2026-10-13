@@ -111,7 +111,7 @@ final class Store: ObservableObject {
 
     func appendSection() {
         var id: UUID?
-        mutate { id = $0.appendSection(title: "New section") }
+        mutate { id = $0.appendSection(title: Localization.string("New section")) }
         focusID = id
     }
 

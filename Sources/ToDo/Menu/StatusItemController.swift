@@ -10,7 +10,7 @@ final class StatusItemController: NSObject, NSMenuDelegate {
         item = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         super.init()
         if let button = item.button {
-            button.image = NSImage(systemSymbolName: "checklist", accessibilityDescription: "To Do")
+            button.image = NSImage(systemSymbolName: "checklist", accessibilityDescription: Localization.string("To Do"))
         }
         menu.delegate = self
         item.menu = menu
@@ -20,23 +20,24 @@ final class StatusItemController: NSObject, NSMenuDelegate {
     func menuWillOpen(_ menu: NSMenu) {
         menu.removeAllItems()
         for controller in registry.controllers {
-            let title = "\(controller.isVisible ? "Hide" : "Show") “\(controller.title)”"
+            let format = Localization.string(controller.isVisible ? "Hide “%@”" : "Show “%@”")
+            let title = String(format: format, controller.title)
             let entry = NSMenuItem(title: title, action: #selector(toggleWidget(_:)), keyEquivalent: "")
             entry.target = self
             entry.representedObject = controller
             menu.addItem(entry)
         }
         menu.addItem(.separator())
-        let newTask = menu.addItem(withTitle: "New Task", action: #selector(newTask), keyEquivalent: "")
+        let newTask = menu.addItem(withTitle: Localization.string("New Task"), action: #selector(newTask), keyEquivalent: "")
         newTask.target = self
-        let newWidget = menu.addItem(withTitle: "New Widget", action: #selector(newWidget), keyEquivalent: "")
+        let newWidget = menu.addItem(withTitle: Localization.string("New Widget"), action: #selector(newWidget), keyEquivalent: "")
         newWidget.target = self
         if registry.controllers.count > 1 {
-            let showAll = menu.addItem(withTitle: "Show All Widgets", action: #selector(showAll), keyEquivalent: "")
+            let showAll = menu.addItem(withTitle: Localization.string("Show All Widgets"), action: #selector(showAll), keyEquivalent: "")
             showAll.target = self
         }
         menu.addItem(.separator())
-        menu.addItem(withTitle: "Quit ToDo", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
+        menu.addItem(withTitle: Localization.string("Quit ToDo"), action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
     }
 
     @objc private func toggleWidget(_ sender: NSMenuItem) {

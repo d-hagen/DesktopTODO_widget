@@ -20,7 +20,7 @@ struct SectionView: View {
                         id: section.id,
                         kind: .header,
                         text: title,
-                        placeholder: "Section",
+                        placeholder: Localization.string("Section"),
                         font: theme.header,
                         color: color,
                         strikethrough: false,

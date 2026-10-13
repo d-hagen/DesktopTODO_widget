@@ -16,6 +16,9 @@ mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp "$BIN" "$APP/Contents/MacOS/ToDo"
 cp Resources/Info.plist "$APP/Contents/Info.plist"
 [[ -f Resources/AppIcon.icns ]] && cp Resources/AppIcon.icns "$APP/Contents/Resources/AppIcon.icns"
+for lproj in Resources/*.lproj; do
+  [[ -d "$lproj" ]] && cp -R "$lproj" "$APP/Contents/Resources/"
+done
 codesign --force --sign - "$APP" 2>/dev/null
 echo "built $APP"
 

@@ -1,0 +1,53 @@
+/* Menu bar (app + status item) */
+"Quit ToDo" = "退出 ToDo";
+"New Task" = "新建任务";
+"New Widget" = "新建组件";
+"Show All Widgets" = "显示全部组件";
+"To Do" = "待办";
+"Hide “%@”" = "隐藏“%@”";
+"Show “%@”" = "显示“%@”";
+
+/* Main menu */
+"File" = "文件";
+"Edit" = "编辑";
+"View" = "显示";
+"Undo" = "撤销";
+"Redo" = "重做";
+"Cut" = "剪切";
+"Copy" = "拷贝";
+"Paste" = "粘贴";
+"Select All" = "全选";
+"Larger Text" = "增大文字";
+"Smaller Text" = "减小文字";
+"Default Text Size" = "默认文字大小";
+
+/* Widget context menu */
+"New Section" = "新建分组";
+"Clear Completed" = "清除已完成";
+"Text Size (%d)" = "文字大小（%d）";
+"Larger" = "增大";
+"Smaller" = "减小";
+"Default (%d)" = "默认（%d）";
+"Color…" = "颜色…";
+"Open %@" = "打开 %@";
+"Choose File…" = "选择文件…";
+"Remove This Widget…" = "删除此组件…";
+"Launch at Login" = "登录时启动";
+"Hide Widget" = "隐藏组件";
+"Hide widget (bring it back from the menu bar icon)" = "隐藏组件（可从菜单栏图标重新显示）";
+
+/* Remove confirmation */
+"Remove the “%@” widget?" = "确定删除“%@”组件？";
+"The list file stays at %@. Only the widget and its color, size and position are removed." = "列表文件仍保留在 %@。仅删除组件及其颜色、大小和位置。";
+"Remove" = "删除";
+"Cancel" = "取消";
+
+/* Editing placeholders */
+"New task" = "新任务";
+"Section" = "分组";
+"New section" = "新分组";
+
+/* Default document starter tasks (the TO DO: title stays English) */
+"Click a line to edit it" = "点击任意一行即可编辑";
+"Press Enter for a new task" = "按回车键新建任务";
+"Type ## Name and press Enter for a header" = "输入 ## 名称 后回车可新建分组";

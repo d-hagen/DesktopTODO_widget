@@ -100,10 +100,10 @@ final class WidgetRegistry: ObservableObject {
     func confirmRemove(_ controller: WidgetController) {
         NSApp.activate(ignoringOtherApps: true)
         let alert = NSAlert()
-        alert.messageText = "Remove the “\(controller.title)” widget?"
-        alert.informativeText = "The list file stays at \(controller.settings.fileURL.path). Only the widget and its color, size and position are removed."
-        alert.addButton(withTitle: "Remove")
-        alert.addButton(withTitle: "Cancel")
+        alert.messageText = String(format: Localization.string("Remove the “%@” widget?"), controller.title)
+        alert.informativeText = String(format: Localization.string("The list file stays at %@. Only the widget and its color, size and position are removed."), controller.settings.fileURL.path)
+        alert.addButton(withTitle: Localization.string("Remove"))
+        alert.addButton(withTitle: Localization.string("Cancel"))
         alert.window.level = .floating
         if alert.runModal() == .alertFirstButtonReturn { remove(controller) }
     }

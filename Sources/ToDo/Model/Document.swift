@@ -50,9 +50,9 @@ struct Document: Equatable {
         title: defaultTitle,
         sections: [
             Section(title: nil, items: [
-                Item(text: "Click a line to edit it"),
-                Item(text: "Press Enter for a new task"),
-                Item(text: "Type ## Name and press Enter for a header"),
+                Item(text: Localization.string("Click a line to edit it")),
+                Item(text: Localization.string("Press Enter for a new task")),
+                Item(text: Localization.string("Type ## Name and press Enter for a header")),
             ]),
         ]
     )
